@@ -1,0 +1,47 @@
+name: anki
+version: '2.0.47'
+summary: Friendly, intelligent flash cards.
+description: |
+  Anki is a program which makes remembering things easy. Because it's a lot
+  more efficient than traditional study methods, you can either greatly
+  decrease your time spent studying, or greatly increase the amount you learn.
+
+  Anyone who needs to remember things in their daily life can benefit from
+  Anki. Since it is content-agnostic and supports images, audio, videos and
+  scientific markup (via LaTeX), the possibilities are endless.
+icon: anki.png
+
+grade: stable
+confinement: devmode
+
+apps:
+  anki:
+    command: desktop-launch $SNAP/usr/local/anki/runanki
+    desktop: usr/share/applications/anki.desktop
+    plugs:
+      - desktop
+      - home
+      - x11
+      - wayland
+      - network-bind
+      - pulseaudio
+
+parts:
+  anki:
+    after: [desktop-qt4]
+    plugin: nil
+    source: https://apps.ankiweb.net/downloads/current/anki-2.0.47-source.tgz
+    prepare: |
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/pixmaps/anki.png|' anki.desktop
+    install: |
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/local/anki
+      cp -a * $SNAPCRAFT_PART_INSTALL/usr/local/anki/
+      cp anki.png $SNAPCRAFT_PART_INSTALL/usr/share/pixmaps/
+      cp anki.desktop $SNAPCRAFT_PART_INSTALL/usr/share/applications
+    stage-packages:
+      - python-qt4
+      - mplayer
+      - lame
+      - libportaudio2
+      - libpulse0
+      - python-sqlalchemy
